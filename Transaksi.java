@@ -1,8 +1,14 @@
 package SistemKasir;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
-public class Transaksi {
+public class Transaksi implements Pembayaran{
+    private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+    String waktuTransaksi = LocalDateTime.now().format(formatter);
+
+
     private Pelanggan pelanggan;
     private ArrayList<DetailTransaksi> daftarBelanja;
     
@@ -39,6 +45,7 @@ public class Transaksi {
         return 0;
     }
     
+    @Override
     public double totalBayar(){
         return totalBelanja() - hitungDiskon();
     }
@@ -49,6 +56,7 @@ public class Transaksi {
         System.out.println("         STRUK PEMBAYARAN");
         System.out.println("=================================");
         System.out.println("Pelanggan : " + pelanggan.getNama());
+        System.out.println(waktuTransaksi);
         System.out.println("---------------------------------");
 
         for (DetailTransaksi item : daftarBelanja) {

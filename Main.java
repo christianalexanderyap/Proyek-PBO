@@ -4,35 +4,52 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Main {
-
     static Scanner sc = new Scanner(System.in);
-    static Transaksi transaksiTerakhir;
     static double totalPendapatan = 0;
 
     public static void main(String[] args) {
-
         ArrayList<Konsumsi> daftarKonsumsi = new ArrayList<>();
+        ArrayList<Pelanggan> daftarPelanggan = new ArrayList<>();
+        ArrayList<Transaksi> daftarTransaksi = new ArrayList<>();
         
+        // ================= MINUMAN =================
         daftarKonsumsi.add(new Minuman("Kopi Tarik Ice", 50, 12000));
         daftarKonsumsi.add(new Minuman("Teh Tarik", 50, 10000));
         daftarKonsumsi.add(new Minuman("Milo Malay", 40, 18000));
+        daftarKonsumsi.add(new Minuman("Thai Tea", 35, 15000));
+        daftarKonsumsi.add(new Minuman("Chocolate Latte", 30, 20000));
+        daftarKonsumsi.add(new Minuman("Matcha Latte", 25, 22000));
+        daftarKonsumsi.add(new Minuman("Lemon Tea", 40, 12000));
+        daftarKonsumsi.add(new Minuman("Cappuccino", 20, 25000));
+        daftarKonsumsi.add(new Minuman("Red Velvet", 18, 23000));
+        daftarKonsumsi.add(new Minuman("Es Jeruk", 45, 10000));
+
+
+        // ================= MAKANAN =================
         daftarKonsumsi.add(new Makanan("Roti Bakar", 25, 15000));
         daftarKonsumsi.add(new Makanan("Kentang Goreng", 20, 12000));
+        daftarKonsumsi.add(new Makanan("Nasi Goreng Spesial", 15, 25000));
+        daftarKonsumsi.add(new Makanan("Mie Ayam", 20, 18000));
+        daftarKonsumsi.add(new Makanan("Chicken Katsu", 18, 28000));
+        daftarKonsumsi.add(new Makanan("Ayam Geprek", 22, 20000));
+        daftarKonsumsi.add(new Makanan("Burger Beef", 15, 30000));
+        daftarKonsumsi.add(new Makanan("Spaghetti Carbonara", 12, 35000));
+        daftarKonsumsi.add(new Makanan("Sosis Bakar", 30, 15000));
+        daftarKonsumsi.add(new Makanan("Nugget Kentang", 28, 17000));
         
         int menu;
-
+        
         do {
 
             System.out.println("\n================================================");
             System.out.println("||                   MENU                     ||");
             System.out.println("================================================");
             System.out.println("|| 1. Transaksi                               ||");
-            System.out.println("|| 2. Cetak Struk                             ||");
-            System.out.println("|| 3. Daftar Stok Barang                      ||");
-            System.out.println("|| 4. Tambah Stok Barang                      ||");
-            System.out.println("|| 5. Tambah Barang Baru                      ||");
-            System.out.println("|| 6. Laporan Pendapatan                      ||");
-            System.out.println("|| 7. Exit                                    ||");
+            System.out.println("|| 2. Daftar Stok Barang                      ||");
+            System.out.println("|| 3. Tambah Stok Barang                      ||");
+            System.out.println("|| 4. Tambah Barang Baru                      ||");
+            System.out.println("|| 5. Laporan Pendapatan                      ||");
+            System.out.println("|| 6. Exit                                    ||");
             System.out.println("================================================");
 
             System.out.print("Pilih menu : ");
@@ -42,30 +59,26 @@ public class Main {
             switch (menu) {
 
                 case 1:
-                    transaksi(daftarKonsumsi);
+                    transaksi(daftarKonsumsi, daftarPelanggan, daftarTransaksi);
                     break;
 
                 case 2:
-                    cetakPembayaran();
-                    break;
-
-                case 3:
                     daftarStokBarang(daftarKonsumsi);
                     break;
 
-                case 4:
+                case 3:
                     tambahStok(daftarKonsumsi);
                     break;
 
-                case 5:
+                case 4:
                     tambahBarangBaru(daftarKonsumsi);
                     break;
 
-                case 6:
-                    laporanPendapatan();
+                case 5:
+                    laporanPendapatan(daftarPelanggan, daftarTransaksi);
                     break;
 
-                case 7:
+                case 6:
                     System.out.println("Terima kasih!");
                     break;
 
@@ -73,12 +86,12 @@ public class Main {
                     System.out.println("Menu tidak tersedia!");
             }
 
-        } while (menu != 7);
+        } while (menu != 6);
 
         sc.close();
     }
     
-    public static void transaksi(ArrayList<Konsumsi> daftarKonsumsi) {
+    public static void transaksi(ArrayList<Konsumsi> daftarKonsumsi, ArrayList<Pelanggan> daftarPelanggan, ArrayList<Transaksi> daftarTransaksi) {
         System.out.println("\n===== TRANSAKSI =====");
 
         System.out.print("Nama pelanggan : ");
@@ -89,8 +102,9 @@ public class Main {
 
         boolean member = memberInput.equalsIgnoreCase("y");
 
-        Pelanggan pelanggan = new Pelanggan(nama, member);
-        transaksiTerakhir = new Transaksi(pelanggan);
+        
+        daftarPelanggan.add(new Pelanggan(nama, member));
+        daftarTransaksi.add(new Transaksi(new Pelanggan(nama, member)));
         ArrayList<Konsumsi> menuTampilan = new ArrayList<>();
 
         boolean lanjut = true;
@@ -128,7 +142,7 @@ public class Main {
             System.out.print("Jumlah beli : ");
             int jumlah = sc.nextInt();
 
-            transaksiTerakhir.tambahItem(pilihMenu, jumlah);
+            daftarTransaksi.get(daftarPelanggan.size() - 1).tambahItem(pilihMenu, jumlah);
             sc.nextLine();
 
             System.out.print("Tambah lagi? (y/n) : ");
@@ -139,34 +153,18 @@ public class Main {
             }
         }
 
-        totalPendapatan += transaksiTerakhir.totalBayar();
+        totalPendapatan += daftarTransaksi.get(daftarPelanggan.size() - 1).totalBayar();
         System.out.println("\nTransaksi berhasil!");
+        cetakPembayaran(daftarTransaksi);
     }
     
-    public static void cetakPembayaran() {
-        if (transaksiTerakhir == null) {
+    public static void cetakPembayaran(ArrayList<Transaksi> daftarTransaksi) {
+        if (totalPendapatan == 0) {
             System.out.println("Belum ada transaksi!");
             return;
         }
 
-        transaksiTerakhir.cetakStruk();
-
-        System.out.println("\nMetode Pembayaran");
-        System.out.println("1. Tunai");
-        System.out.println("2. Transfer");
-
-        System.out.print("Pilih metode : ");
-
-        int metode = sc.nextInt();
-
-        Pembayaran pembayaran;
-
-        if (metode == 1) {
-            pembayaran = new Tunai();
-        } else {
-            pembayaran = new Transfer();
-        }
-        pembayaran.bayar(transaksiTerakhir.totalBayar());
+        daftarTransaksi.get(daftarTransaksi.size() - 1).cetakStruk();
     }
     
     public static void daftarStokBarang(ArrayList<Konsumsi> daftarKonsumsi) {
@@ -226,8 +224,11 @@ public class Main {
         System.out.println("Barang berhasil ditambahkan!");
     }
 
-    public static void laporanPendapatan() {
+    public static void laporanPendapatan(ArrayList<Pelanggan>  daftarPelanggan, ArrayList<Transaksi> daftarTransaksi) {
         System.out.println("\n===== LAPORAN PENDAPATAN =====");
+        for (int i = 0; i < daftarPelanggan.size(); i++) {
+            System.out.println("Pelanggan ke-" + (i + 1) + " " + daftarPelanggan.get(i).toString() + " : Rp " +daftarTransaksi.get(i).totalBayar());
+        }
         System.out.println("Total Pendapatan : Rp " + totalPendapatan);
     }
 }

@@ -16,4 +16,7 @@ public class Pelanggan {
     public boolean isMember() {
         return member;
     }
+    public String toString() {
+        return nama;
+    }
 }
